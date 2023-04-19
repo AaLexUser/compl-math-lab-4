@@ -28,7 +28,8 @@ void approx::AbstractApproximation::set_standard_deviation() {
     _extras["Standard Deviation"] = sqrt(_extras["Minimization criterion"] / (_points.size()));
 }
 
-void approx::AbstractApproximation::get_info() {
+std::pair<std::vector<std::vector<std::string>>, std::vector<std::string>>
+ approx::AbstractApproximation::get_info() {
     std::vector<std::vector<std::string>> res(_points.size());
     for(int i = 0; i < _points.size(); ++i) {
         res[i].push_back(std::to_string(static_cast<int>(i + 1)));
@@ -37,14 +38,15 @@ void approx::AbstractApproximation::get_info() {
         res[i].push_back(std::to_string(_f(_points[i].first, _params)));
         res[i].push_back(std::to_string(_f(_points[i].first, _params) - _points[i].second));
     }
-    ctable << std::make_pair<std::vector<std::vector<std::string>> &, std::vector<std::string>>(res,  {"N p.p.", "xi", "yi", "fi", "ei"});
+    return std::make_pair<std::vector<std::vector<std::string>> &, std::vector<std::string>>(res,  {"N p.p.", "xi", "yi", "fi", "ei"});
 }
 
 double approx::AbstractApproximation::get_extra_info(std::string key) {
     return _extras[key];
 }
 
-void approx::AbstractApproximation::get_extras_info() {
+std::pair<std::vector<std::vector<std::string>>, std::vector<std::string>>
+    approx::AbstractApproximation::get_extras_info() {
     std::vector<std::vector<std::string>> res(_extras.size());
     int i = 0;
     for(auto extra : _extras) {
@@ -55,7 +57,7 @@ void approx::AbstractApproximation::get_extras_info() {
     for(int i = 0; i < _params.size(); ++i) {
         res.push_back({"a" + std::to_string(i), std::to_string(_params[i])});
     }
-    ctable << std::make_pair<std::vector<std::vector<std::string>> &, std::vector<std::string>>(res,  {"Key", "Value"});
+    return std::make_pair<std::vector<std::vector<std::string>> &, std::vector<std::string>>(res,  {"Key", "Value"});
 }
 
 const std::function<double(double, std::vector<double>)> & approx::AbstractApproximation::getF() const {

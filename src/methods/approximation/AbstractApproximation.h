@@ -18,11 +18,11 @@ namespace approx {
 
 
     public:
-        void get_info() override;
+        std::pair<std::vector<std::vector<std::string>>, std::vector<std::string>> get_info() override;
 
         double get_extra_info(std::string key) override;
 
-        void get_extras_info() override;
+        std::pair<std::vector<std::vector<std::string>>, std::vector<std::string>> get_extras_info() override;
 
         [[nodiscard]] const std::function<double(double, std::vector<double>)> &getF() const override;
 

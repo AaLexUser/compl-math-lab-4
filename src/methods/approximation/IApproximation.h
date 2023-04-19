@@ -18,11 +18,11 @@ namespace approx {
 
         virtual void fit() = 0;
 
-        virtual void get_info() = 0;
+        virtual std::pair<std::vector<std::vector<std::string>>, std::vector<std::string>> get_info() = 0;
 
         virtual double get_extra_info(std::string key) = 0;
 
-        virtual void get_extras_info() = 0;
+        virtual std::pair<std::vector<std::vector<std::string>>, std::vector<std::string>> get_extras_info() = 0;
 
         virtual const std::function<double(double, std::vector<double>)> &getF() const = 0;
 
