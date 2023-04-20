@@ -3,7 +3,7 @@
 //
 
 #include "AbstractApproximation.h"
-
+#include <sstream>
 approx::AbstractApproximation::AbstractApproximation(const std::function<double(double, std::vector<double>)> &f,
                                              const std::vector<std::pair<double, double>> &points) : _f(f),
                                                                                                      _points(points) {}
@@ -15,7 +15,6 @@ void approx::AbstractApproximation::set_s() {
         return;
     }
     for(auto point : _points) {
-        double test = _f(point.first, _params);
         S+=pow(_f(point.first, _params) - point.second, 2);
     }
     _extras["Minimization criterion"] = S;
@@ -32,11 +31,19 @@ std::pair<std::vector<std::vector<std::string>>, std::vector<std::string>>
  approx::AbstractApproximation::get_info() {
     std::vector<std::vector<std::string>> res(_points.size());
     for(int i = 0; i < _points.size(); ++i) {
+        std::ostringstream ss_x;
+        ss_x << std::setprecision(3) << _points[i].first;
+        std::ostringstream ss_y;
+        ss_y << std::setprecision(3) << _points[i].second;
+        std::ostringstream ss_f;
+        ss_f<< std::setprecision(3) << _f(_points[i].first, _params);
+        std::ostringstream ss_e;
+        ss_e  << std::setprecision(3) << (_f(_points[i].first, _params) - _points[i].second);
         res[i].push_back(std::to_string(static_cast<int>(i + 1)));
-        res[i].push_back(std::to_string(_points[i].first));
-        res[i].push_back(std::to_string(_points[i].second));
-        res[i].push_back(std::to_string(_f(_points[i].first, _params)));
-        res[i].push_back(std::to_string(_f(_points[i].first, _params) - _points[i].second));
+        res[i].push_back(ss_x.str());
+        res[i].push_back(ss_y.str());
+        res[i].push_back(ss_f.str());
+        res[i].push_back(ss_e.str());
     }
     return std::make_pair<std::vector<std::vector<std::string>> &, std::vector<std::string>>(res,  {"N p.p.", "xi", "yi", "fi", "ei"});
 }
@@ -51,11 +58,15 @@ std::pair<std::vector<std::vector<std::string>>, std::vector<std::string>>
     int i = 0;
     for(auto extra : _extras) {
         res[i].push_back(extra.first);
-        res[i].push_back(std::to_string(extra.second));
+        std::ostringstream ss_val;
+        ss_val << std::setprecision(3) << extra.second;
+        res[i].push_back(ss_val.str());
         ++i;
     }
     for(int i = 0; i < _params.size(); ++i) {
-        res.push_back({"a" + std::to_string(i), std::to_string(_params[i])});
+        std::ostringstream ss_coef;
+        ss_coef << std::setprecision(3) << _params[i];
+        res.push_back({"a" + std::to_string(i), ss_coef.str()});
     }
     return std::make_pair<std::vector<std::vector<std::string>> &, std::vector<std::string>>(res,  {"Key", "Value"});
 }

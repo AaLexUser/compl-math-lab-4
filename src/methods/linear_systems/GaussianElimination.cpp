@@ -41,7 +41,7 @@ void GaussianElimination::solve(std::vector<std::vector<double>> &A, std::vector
             b[j] -= mult * b[i];
         }
     }
-
+    const double multiplier = std::pow(10.0, 6);
     // back substitution to solve for x
     for (int i = n-1; i >= 0; i--) {
         double sum = 0.0;
@@ -49,5 +49,6 @@ void GaussianElimination::solve(std::vector<std::vector<double>> &A, std::vector
             sum += A[i][j] * x[j];
         }
         x[i] = (b[i] - sum) / A[i][i];
+
     }
 }

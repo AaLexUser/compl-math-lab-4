@@ -58,10 +58,10 @@ int main() {
             int n;
             std::cout << "Enter number of points: ";
             std::cin >> n;
-            if (std::cin.fail() || n < 1) {
+            if (std::cin.fail() || n < 8) {
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                std::cerr << "Invalid input. Please enter a positive integer." << std::endl;
+                std::cerr << "Invalid input. Please enter a positive integer 8 or more." << std::endl;
                 continue;
             }
             for (int i = 0; i < n; ++i) {
@@ -119,15 +119,18 @@ int main() {
     for (auto &approx : manager.getApproximations()) {
         std::string str = approximation_str[approx.first];
         std::transform(str.begin(), str.end(), str.begin(), ::toupper);
-        printer <<std::string(10, '-') << str << std::string(10, '-')<<"\n";
         approx.second->fit();
-        ctable << approx.second->get_info();
-        ctable << approx.second->get_extras_info();
-        shapes.push_back(std::make_unique<FuncGraph>(approx.second->getF(), approx.second->getParams(), 10, colors[approx.first]));
-        legend.addEntry(approximation_str[approx.first], colors[approx.first]);
-        if (approx.second->get_extra_info("Standard Deviation") < min_sd) {
-            min_sd = approx.second->get_extra_info("Standard Deviation");
-            best_approximation = approx.first;
+        if(!std::isnan(approx.second->getParams()[0])) {
+            printer << std::string(10, '-') << str << std::string(10, '-') << "\n";
+            ctable << approx.second->get_info();
+            ctable << approx.second->get_extras_info();
+            shapes.push_back(std::make_unique<FuncGraph>(approx.second->getF(), approx.second->getParams(), 10,
+                                                         colors[approx.first]));
+            legend.addEntry(approximation_str[approx.first], colors[approx.first]);
+            if (approx.second->get_extra_info("Standard Deviation") < min_sd) {
+                min_sd = approx.second->get_extra_info("Standard Deviation");
+                best_approximation = approx.first;
+            }
         }
     }
     printer << std::string(10, '-') << "BEST APPROXIMATION" << std::string(10, '-') << "\n";
